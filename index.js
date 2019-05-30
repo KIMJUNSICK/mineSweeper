@@ -1,6 +1,35 @@
 const btn = document.getElementById("btn");
 const table = document.querySelector("#table tbody");
 
+const DATASET = [];
+
+// const handleRightClick = event => {};
+
+const makeTable = (row, column) => {
+  for (let i = 0; i < row; i += 1) {
+    var area = [];
+    const tr = document.createElement("tr");
+    DATASET.push(area);
+    for (let j = 0; j < column; j += 1) {
+      const td = document.createElement("td");
+      area.push("o");
+      td.addEventListener("contextmenu", function(event) {
+        event.preventDefault();
+
+        let parentTable = event.currentTarget.parentNode.parentNode;
+        let whatRow = Array.prototype.indexOf.call(parentTable.children, tr);
+        let parentRow = event.currentTarget.parentNode;
+        let whatColumn = Array.prototype.indexOf.call(parentRow.children, td);
+        event.currentTarget.textContent = "✔";
+        console.log(whatRow, whatColumn);
+        DATASET[whatRow][whatColumn] = "✔";
+      });
+      tr.appendChild(td);
+    }
+    table.appendChild(tr);
+  }
+};
+
 const handleRandom = (row, column, mine) => {
   const CANDIDATE = Array(row * column).fill();
   const CANDI = CANDIDATE.map(function(element, index) {
@@ -20,18 +49,8 @@ const makeMine = (suffleValue, column) => {
   for (k = 0; k < suffleValue.length; k += 1) {
     let positionRow = Math.floor(suffleValue[k] / column);
     let positionColumn = suffleValue[k] % column;
-    table.children[positionRow].children[positionColumn].textContent = "X";
-  }
-};
-
-const makeTable = (row, column) => {
-  for (let i = 0; i < row; i += 1) {
-    const tr = document.createElement("tr");
-    for (let j = 0; j < column; j += 1) {
-      const td = document.createElement("td");
-      tr.appendChild(td);
-    }
-    table.appendChild(tr);
+    table.children[positionRow].children[positionColumn].textContent = "😈";
+    DATASET[positionRow][positionColumn] = "😈";
   }
 };
 
