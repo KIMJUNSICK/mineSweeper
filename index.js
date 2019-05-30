@@ -1,27 +1,33 @@
 const btn = document.getElementById("btn");
 const table = document.querySelector("#table tbody");
 
-const handleRandom = (row, column) => {
+const handleRandom = (row, column, mine) => {
   const CANDIDATE = Array(row * column).fill();
   const CANDI = CANDIDATE.map(function(element, index) {
-    return index + 1;
+    return index;
   });
 
   const SUFFLE = [];
-  while (row * column > 0) {
-    const NUMBER = CANDI.splice(Math.floor(Math.random() * (row * column)));
+  const input = row * column - mine;
+  while (CANDI.length > input) {
+    const NUMBER = CANDI.splice(Math.floor(Math.random() * CANDI.length), 1)[0];
     SUFFLE.push(NUMBER);
   }
-
-  console.log(SUFFLE);
+  return SUFFLE;
 };
 
-handleRandom(10, 10);
+const makeMine = (suffleValue, column) => {
+  for (k = 0; k < suffleValue.length; k += 1) {
+    let positionRow = Math.floor(suffleValue[k] / column);
+    let positionColumn = suffleValue[k] % column;
+    table.children[positionRow].children[positionColumn].textContent = "X";
+  }
+};
 
 const makeTable = (row, column) => {
-  for (let i = 0; i < column; i += 1) {
+  for (let i = 0; i < row; i += 1) {
     const tr = document.createElement("tr");
-    for (let j = 0; j < row; j += 1) {
+    for (let j = 0; j < column; j += 1) {
       const td = document.createElement("td");
       tr.appendChild(td);
     }
@@ -34,6 +40,8 @@ const handleCommit = () => {
   const column = parseInt(document.getElementById("vertical").value);
   const mine = parseInt(document.getElementById("mine").value);
   makeTable(row, column);
+  const suffleValue = handleRandom(row, column, mine);
+  makeMine(suffleValue, column);
 };
 
 const init = () => {
