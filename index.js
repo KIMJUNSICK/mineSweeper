@@ -3,8 +3,6 @@ const table = document.querySelector("#table tbody");
 
 const DATASET = [];
 
-// const handleRightClick = event => {};
-
 const makeTable = (row, column) => {
   for (let i = 0; i < row; i += 1) {
     var area = [];
@@ -34,6 +32,38 @@ const makeTable = (row, column) => {
           } else if (DATASET[whatRow][whatColumn] === "😈") {
             event.currentTarget.textContent = "😈";
           }
+        }
+      });
+      td.addEventListener("click", function(event) {
+        let parentTable = event.currentTarget.parentNode.parentNode;
+        let parentRow = event.currentTarget.parentNode;
+        let whatRow = Array.prototype.indexOf.call(parentTable.children, tr);
+        let whatColumn = Array.prototype.indexOf.call(parentRow.children, td);
+
+        if (DATASET[whatRow][whatColumn] === "😈") {
+          event.currentTarget.textContent = "💣";
+        } else {
+          let near = [
+            DATASET[whatRow][whatColumn - 1],
+            DATASET[whatRow][whatColumn + 1]
+          ];
+          if (DATASET[whatRow - 1]) {
+            near = near.concat(
+              DATASET[whatRow - 1][whatColumn - 1],
+              DATASET[whatRow - 1][whatColumn],
+              DATASET[whatRow - 1][whatColumn + 1]
+            );
+          }
+          if (DATASET[whatRow + 1]) {
+            near = near.concat(
+              DATASET[whatRow + 1][whatColumn - 1],
+              DATASET[whatRow + 1][whatColumn],
+              DATASET[whatRow + 1][whatColumn + 1]
+            );
+          }
+          event.currentTarget.textContent = near.filter(function(v) {
+            return v === "😈";
+          }).length;
         }
       });
       tr.appendChild(td);
