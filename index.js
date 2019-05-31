@@ -17,12 +17,24 @@ const makeTable = (row, column) => {
         event.preventDefault();
 
         let parentTable = event.currentTarget.parentNode.parentNode;
-        let whatRow = Array.prototype.indexOf.call(parentTable.children, tr);
         let parentRow = event.currentTarget.parentNode;
+        let whatRow = Array.prototype.indexOf.call(
+          parentTable.children,
+          parentRow
+        );
         let whatColumn = Array.prototype.indexOf.call(parentRow.children, td);
-        event.currentTarget.textContent = "✔";
         console.log(whatRow, whatColumn);
-        DATASET[whatRow][whatColumn] = "✔";
+        if (["", "😈"].includes(event.currentTarget.textContent)) {
+          event.currentTarget.textContent = "✔";
+        } else if (event.currentTarget.textContent === "✔") {
+          event.currentTarget.textContent = "🤔";
+        } else if (event.currentTarget.textContent === "🤔") {
+          if (DATASET[whatRow][whatColumn] === "o") {
+            event.currentTarget.textContent = "";
+          } else if (DATASET[whatRow][whatColumn] === "😈") {
+            event.currentTarget.textContent = "😈";
+          }
+        }
       });
       tr.appendChild(td);
     }
@@ -55,6 +67,7 @@ const makeMine = (suffleValue, column) => {
 };
 
 const handleCommit = () => {
+  table.innerHTML = "";
   const row = parseInt(document.getElementById("horizontal").value);
   const column = parseInt(document.getElementById("vertical").value);
   const mine = parseInt(document.getElementById("mine").value);
