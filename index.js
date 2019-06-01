@@ -1,5 +1,6 @@
 const btn = document.getElementById("btn");
 const table = document.querySelector("#table tbody");
+const result = document.querySelector(".result");
 
 let DATASET = [];
 
@@ -10,7 +11,7 @@ const makeTable = (row, column) => {
     DATASET.push(area);
     for (let j = 0; j < column; j += 1) {
       const td = document.createElement("td");
-      area.push("o");
+      area.push(0);
       td.addEventListener("contextmenu", function(event) {
         event.preventDefault();
 
@@ -44,6 +45,7 @@ const makeTable = (row, column) => {
 
         if (DATASET[whatRow][whatColumn] === "😈") {
           event.currentTarget.textContent = "💣";
+          result.innerText = "E.N.D";
         } else {
           let near = [
             DATASET[whatRow][whatColumn - 1],
@@ -68,9 +70,10 @@ const makeTable = (row, column) => {
             return v === "😈";
           }).length;
 
-          event.currentTarget.textContent = nearMine;
+          event.currentTarget.textContent = nearMine || "";
 
           if (nearMine === 0) {
+            console.log("open!!");
             let nearSpace = [];
             if (table.children[whatRow - 1]) {
               nearSpace = nearSpace.concat([
@@ -90,10 +93,23 @@ const makeTable = (row, column) => {
                 table.children[whatRow + 1].children[whatColumn + 1]
               ]);
             }
+            DATASET[whatRow][whatColumn] = 1;
             nearSpace
               .filter(v => !!v)
-              .forEach(function(e) {
-                e.click();
+              .forEach(function(near) {
+                let parentTable = near.parentNode.parentNode;
+                let parentRow = near.parentNode;
+                let nearwhatRow = Array.prototype.indexOf.call(
+                  parentTable.children,
+                  parentRow
+                );
+                let nearwhatColumn = Array.prototype.indexOf.call(
+                  parentRow.children,
+                  near
+                );
+                if (DATASET[nearwhatRow][nearwhatColumn] !== 1) {
+                  near.click();
+                }
               });
           }
         }
@@ -131,6 +147,7 @@ const makeMine = (suffleValue, column) => {
 const handleCommit = () => {
   table.innerHTML = "";
   DATASET = [];
+  result.innerText = "";
   const row = parseInt(document.getElementById("horizontal").value);
   const column = parseInt(document.getElementById("vertical").value);
   const mine = parseInt(document.getElementById("mine").value);

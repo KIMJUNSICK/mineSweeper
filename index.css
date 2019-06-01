@@ -16,3 +16,7 @@ table {
 .opened {
   background-color: white;
 }
+
+.result {
+  margin-top: 10px;
+}
