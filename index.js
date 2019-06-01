@@ -1,7 +1,7 @@
 const btn = document.getElementById("btn");
 const table = document.querySelector("#table tbody");
 
-const DATASET = [];
+let DATASET = [];
 
 const makeTable = (row, column) => {
   for (let i = 0; i < row; i += 1) {
@@ -40,6 +40,8 @@ const makeTable = (row, column) => {
         let whatRow = Array.prototype.indexOf.call(parentTable.children, tr);
         let whatColumn = Array.prototype.indexOf.call(parentRow.children, td);
 
+        event.currentTarget.classList.add("opened");
+
         if (DATASET[whatRow][whatColumn] === "😈") {
           event.currentTarget.textContent = "💣";
         } else {
@@ -61,9 +63,39 @@ const makeTable = (row, column) => {
               DATASET[whatRow + 1][whatColumn + 1]
             );
           }
-          event.currentTarget.textContent = near.filter(function(v) {
+
+          let nearMine = near.filter(function(v) {
             return v === "😈";
           }).length;
+
+          event.currentTarget.textContent = nearMine;
+
+          if (nearMine === 0) {
+            let nearSpace = [];
+            if (table.children[whatRow - 1]) {
+              nearSpace = nearSpace.concat([
+                table.children[whatRow - 1].children[whatColumn - 1],
+                table.children[whatRow - 1].children[whatColumn],
+                table.children[whatRow - 1].children[whatColumn + 1]
+              ]);
+            }
+            nearSpace = nearSpace.concat([
+              table.children[whatRow].children[whatColumn - 1],
+              table.children[whatRow].children[whatColumn + 1]
+            ]);
+            if (table.children[whatRow + 1]) {
+              nearSpace = nearSpace.concat([
+                table.children[whatRow + 1].children[whatColumn - 1],
+                table.children[whatRow + 1].children[whatColumn],
+                table.children[whatRow + 1].children[whatColumn + 1]
+              ]);
+            }
+            nearSpace
+              .filter(v => !!v)
+              .forEach(function(e) {
+                e.click();
+              });
+          }
         }
       });
       tr.appendChild(td);
@@ -98,6 +130,7 @@ const makeMine = (suffleValue, column) => {
 
 const handleCommit = () => {
   table.innerHTML = "";
+  DATASET = [];
   const row = parseInt(document.getElementById("horizontal").value);
   const column = parseInt(document.getElementById("vertical").value);
   const mine = parseInt(document.getElementById("mine").value);
