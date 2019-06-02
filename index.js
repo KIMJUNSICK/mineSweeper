@@ -52,7 +52,6 @@ const makeTable = (row, column) => {
         }
         event.currentTarget.classList.add("opened");
         openTd += 1;
-        console.log(openTd);
 
         if (DATASET[whatRow][whatColumn] === "😈") {
           event.currentTarget.textContent = "💣";
@@ -156,7 +155,8 @@ const makeMine = (suffleValue, column) => {
   for (k = 0; k < suffleValue.length; k += 1) {
     let positionRow = Math.floor(suffleValue[k] / column);
     let positionColumn = suffleValue[k] % column;
-    table.children[positionRow].children[positionColumn].textContent = "😈";
+    // table.children[positionRow].children[positionColumn].textContent = "😈";
+    table.children[positionRow].children[positionColumn].classList.add("mine");
     DATASET[positionRow][positionColumn] = "😈";
   }
 };
