@@ -2,7 +2,9 @@ const btn = document.getElementById("btn");
 const table = document.querySelector("#table tbody");
 const result = document.querySelector(".result");
 
+let flag = false;
 let DATASET = [];
+let openTd = 0;
 
 const makeTable = (row, column) => {
   for (let i = 0; i < row; i += 1) {
@@ -36,16 +38,24 @@ const makeTable = (row, column) => {
         }
       });
       td.addEventListener("click", function(event) {
+        if (flag === true) {
+          return;
+        }
         let parentTable = event.currentTarget.parentNode.parentNode;
         let parentRow = event.currentTarget.parentNode;
         let whatRow = Array.prototype.indexOf.call(parentTable.children, tr);
         let whatColumn = Array.prototype.indexOf.call(parentRow.children, td);
-
+        if (DATASET[whatRow][whatColumn] === 1) {
+          return;
+        }
         event.currentTarget.classList.add("opened");
+        openTd += 1;
+        console.log(openTd);
 
         if (DATASET[whatRow][whatColumn] === "😈") {
           event.currentTarget.textContent = "💣";
           result.innerText = "E.N.D";
+          flag = true;
         } else {
           let near = [
             DATASET[whatRow][whatColumn - 1],
@@ -71,9 +81,8 @@ const makeTable = (row, column) => {
           }).length;
 
           event.currentTarget.textContent = nearMine || "";
-
+          DATASET[whatRow][whatColumn] = 1;
           if (nearMine === 0) {
-            console.log("open!!");
             let nearSpace = [];
             if (table.children[whatRow - 1]) {
               nearSpace = nearSpace.concat([
@@ -93,7 +102,6 @@ const makeTable = (row, column) => {
                 table.children[whatRow + 1].children[whatColumn + 1]
               ]);
             }
-            DATASET[whatRow][whatColumn] = 1;
             nearSpace
               .filter(v => !!v)
               .forEach(function(near) {
@@ -111,6 +119,13 @@ const makeTable = (row, column) => {
                   near.click();
                 }
               });
+          }
+          const row = parseInt(document.getElementById("horizontal").value);
+          const column = parseInt(document.getElementById("vertical").value);
+          const mine = parseInt(document.getElementById("mine").value);
+          if (openTd === row * column - mine) {
+            flag = true;
+            result.innerText = "Safe!";
           }
         }
       });
@@ -148,6 +163,8 @@ const handleCommit = () => {
   table.innerHTML = "";
   DATASET = [];
   result.innerText = "";
+  flag = false;
+  openTd = 0;
   const row = parseInt(document.getElementById("horizontal").value);
   const column = parseInt(document.getElementById("vertical").value);
   const mine = parseInt(document.getElementById("mine").value);
