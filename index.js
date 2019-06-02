@@ -24,13 +24,12 @@ const makeTable = (row, column) => {
           parentRow
         );
         let whatColumn = Array.prototype.indexOf.call(parentRow.children, td);
-        console.log(whatRow, whatColumn);
         if (["", "😈"].includes(event.currentTarget.textContent)) {
           event.currentTarget.textContent = "✔";
         } else if (event.currentTarget.textContent === "✔") {
           event.currentTarget.textContent = "🤔";
         } else if (event.currentTarget.textContent === "🤔") {
-          if (DATASET[whatRow][whatColumn] === "o") {
+          if (DATASET[whatRow][whatColumn] === 0) {
             event.currentTarget.textContent = "";
           } else if (DATASET[whatRow][whatColumn] === "😈") {
             event.currentTarget.textContent = "😈";
@@ -45,7 +44,10 @@ const makeTable = (row, column) => {
         let parentRow = event.currentTarget.parentNode;
         let whatRow = Array.prototype.indexOf.call(parentTable.children, tr);
         let whatColumn = Array.prototype.indexOf.call(parentRow.children, td);
-        if (DATASET[whatRow][whatColumn] === 1) {
+        if (
+          DATASET[whatRow][whatColumn] === 1 ||
+          ["🤔", "✔"].includes(event.currentTarget.textContent)
+        ) {
           return;
         }
         event.currentTarget.classList.add("opened");
